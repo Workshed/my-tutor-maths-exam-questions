@@ -3,6 +3,10 @@
 {% block body %}
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
 
 <main class="container ai-question-container">
   <div class="answer-page-title">
@@ -202,6 +206,7 @@
           loadingScreen.style.display = "none";
           feedbackPara.innerHTML = response.data.result.join('<br>');
           feedbackSection.classList.remove('hidden')
+          MathJax.typeset()
 
 
           // createConfettiAnimation();

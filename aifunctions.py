@@ -25,13 +25,33 @@ def create_question(subject, level, exam_board, number_of_marks, topic, same_aga
 
     exam_board_sentence = 'Model the question on previous {} {} {} papers.'.format(level,subject,exam_board) if len(exam_board) > 0 else " "
 
+    # message = '''Create a {} {} {} example exam question, worth {} mark(s), which we will refer to as <question>. {} {} {}. It is important that the number of marks is exactly {}.
+    # If you refer to a text, either refer to it by name or quote it.
+    # The exam question must be a question that can receive a text-based answer.
+    # You must include all the information required to answer the question.
+    # If it is a maths question, make sure you follow the san mateo county community college district standard for writing maths in ascii.
+    # Give your response to this request in the format `Question: <question> [<number of marks> Mark(s)].`
+    # '''.format(subject, level, exam_board, number_of_marks, exam_board_sentence, same_again_sentence,  topic_sentance, number_of_marks, exam_board, subject, level )
+    
     message = '''Create a {} {} {} example exam question, worth {} mark(s), which we will refer to as <question>. {} {} {}. It is important that the number of marks is exactly {}.
     If you refer to a text, either refer to it by name or quote it.
-    The exam question must be a question that can receive a text-based answer.
+    The exam question must include a formula, all formulas must be specified in LaTeX. When outputting LaTeX could you please use the specific LaTeX math mode delimiters for your response?
+
+    LaTex math mode specific delimiters as following
+
+    inline math mode : `\(` and `\)`
+    display math mode: insert linebreak after opening `$$`, `\[` and before closing `$$`, `\]`
+
     You must include all the information required to answer the question.
-    If it is a maths question, make sure you follow the san mateo county community college district standard for writing maths in ascii.
     Give your response to this request in the format `Question: <question> [<number of marks> Mark(s)].`
     '''.format(subject, level, exam_board, number_of_marks, exam_board_sentence, same_again_sentence,  topic_sentance, number_of_marks, exam_board, subject, level )
+
+    '''Could you please use the specific LaTeX math mode delimiters for your response?
+
+    LaTex math mode specific delimiters as following
+
+    inline math mode : `\(` and `\)`
+    display math mode: insert linebreak after opening `$$`, `\[` and before closing `$$`, `\]`'''
 
     print(message)
 
@@ -76,7 +96,7 @@ def create_mark_scheme(subject, level, exam_board, question, number_of_marks):
 
 
 def same_again(subject, level, exam_board, number_of_marks, topic, question):
-    sameAgainSentence = "It should be very similar to the question {}, but not exactly the same. Keep the subject area as similar as possible, but make sure it has a different answer.".format(question)
+    sameAgainSentence = "It should be similar to the question {}, but not exactly the same. Keep the subject area as similar as possible, but make sure it has a different answer.".format(question)
     return create_question(subject, level, exam_board, number_of_marks, topic, sameAgainSentence)
 
 
