@@ -7,6 +7,7 @@
 <script type="text/javascript" id="MathJax-script" async
   src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
 </script>
+<script src="https://unpkg.com/mathlive/dist/mathlive.min.js"></script>
 
 <main class="container ai-question-container">
   <div class="answer-page-title">
@@ -30,9 +31,22 @@
 
   </div>
 
+  <script type="module">
+    window.addEventListener("DOMContentLoaded", () => 
+      import("//unpkg.com/mathlive?module").then((mathlive) => 
+        mathlive.renderMathInDocument()
+      )
+    );
+  </script>
+
 <div class="user-answer">
   <div class="user-answer-form">
+    Use this box to create mathematical formulas to insert in to your answer...
+    <br />
+    <math-field id="mathfield"></math-field>
+      <button id="insert-latex" class="btn btn-primary btn-lg">Insert LaTeX</button>
     <form class="" onsubmit="handleSubmit(event)" method="post">
+      
       <div class="mb-3">
         <textarea id="the-answer" name="answer" rows="8" cols="80">{{ answer }}</textarea>
       </div>
@@ -128,6 +142,22 @@
   var feedbackPara = document.getElementById('feedback')
   var markSchemePara = document.getElementById('mark-scheme-para')
   var hintPara = document.getElementById('hint')
+  const mf = document.getElementById('mathfield')
+  const insertButton = document.getElementById('insert-latex');
+  const textarea = document.getElementById('the-answer');
+
+  insertButton.addEventListener('click', function(event) {
+    // Get the LaTeX from the math field
+    const latex = mf.getValue('latex');
+
+    // Get the current cursor position in the textarea
+    const cursorPosition = textarea.selectionStart;
+
+    // Insert the LaTeX at the cursor position
+    const before = textarea.value.substring(0, cursorPosition);
+    const after = textarea.value.substring(cursorPosition);
+    textarea.value = before + latex + after;
+  });
 
   function getMarkScheme() {
     axios.post('/get-mark-scheme')
@@ -187,9 +217,6 @@
     })();
 }
 
-
-
-
   function handleSubmit(event) {
       // Prevent the form from submitting normally
       event.preventDefault();
@@ -220,8 +247,6 @@
         });
 
     }
-
-  console.log("Hello")
 
   getMarkScheme();
   getStarAnswer();

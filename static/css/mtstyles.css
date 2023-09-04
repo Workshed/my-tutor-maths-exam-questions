@@ -185,6 +185,11 @@ body {
     height: 300px;
   }
 
+  #mathfield {
+    /* Hack size */
+    width: 450px;
+  }
+
   .ai-star-answer {
     border: 6px solid #03CCBB;
     border-radius: 6px;
