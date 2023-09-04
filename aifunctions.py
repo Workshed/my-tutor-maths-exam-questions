@@ -24,34 +24,37 @@ def create_question(subject, level, exam_board, number_of_marks, topic, same_aga
     topic_sentance = '''The question should be on the topic of {}.'''.format(topic) if topic else " "
 
     exam_board_sentence = 'Model the question on previous {} {} {} papers.'.format(level,subject,exam_board) if len(exam_board) > 0 else " "
-
+    
     # message = '''Create a {} {} {} example exam question, worth {} mark(s), which we will refer to as <question>. {} {} {}. It is important that the number of marks is exactly {}.
     # If you refer to a text, either refer to it by name or quote it.
-    # The exam question must be a question that can receive a text-based answer.
+    # The exam question must include a formula, all formulas must be specified in LaTeX. When outputting LaTeX could you please use the specific LaTeX math mode delimiters for your response?
+
+    # LaTex math mode specific delimiters as following
+
+    # inline math mode : `\(` and `\)`
+    # display math mode: insert linebreak after opening `$$`, `\[` and before closing `$$`, `\]`
+
     # You must include all the information required to answer the question.
-    # If it is a maths question, make sure you follow the san mateo county community college district standard for writing maths in ascii.
     # Give your response to this request in the format `Question: <question> [<number of marks> Mark(s)].`
     # '''.format(subject, level, exam_board, number_of_marks, exam_board_sentence, same_again_sentence,  topic_sentance, number_of_marks, exam_board, subject, level )
-    
+
     message = '''Create a {} {} {} example exam question, worth {} mark(s), which we will refer to as <question>. {} {} {}. It is important that the number of marks is exactly {}.
     If you refer to a text, either refer to it by name or quote it.
+    You must include all the information required to answer the question.
+    Give your response to this request in the format `Question: <question> [<number of marks> Mark(s)].
     The exam question must include a formula, all formulas must be specified in LaTeX. When outputting LaTeX could you please use the specific LaTeX math mode delimiters for your response?
 
     LaTex math mode specific delimiters as following
 
     inline math mode : `\(` and `\)`
-    display math mode: insert linebreak after opening `$$`, `\[` and before closing `$$`, `\]`
-
-    You must include all the information required to answer the question.
-    Give your response to this request in the format `Question: <question> [<number of marks> Mark(s)].`
     '''.format(subject, level, exam_board, number_of_marks, exam_board_sentence, same_again_sentence,  topic_sentance, number_of_marks, exam_board, subject, level )
 
-    '''Could you please use the specific LaTeX math mode delimiters for your response?
+    # '''Could you please use the specific LaTeX math mode delimiters for your response?
 
-    LaTex math mode specific delimiters as following
+    # LaTex math mode specific delimiters as following
 
-    inline math mode : `\(` and `\)`
-    display math mode: insert linebreak after opening `$$`, `\[` and before closing `$$`, `\]`'''
+    # inline math mode : `\(` and `\)`
+    # display math mode: insert linebreak after opening `$$`, `\[` and before closing `$$`, `\]`'''
 
     print(message)
 
@@ -78,10 +81,12 @@ def create_mark_scheme(subject, level, exam_board, question, number_of_marks):
 
     number_of_marks = number_of_marks if number_of_marks else 3
     message = '''The following is a {} {} {} example exam question, which is worth {} mark(s): `{}`.
+        The example exam question may include LaTeX, the LaTex math mode specific delimiters as following
+        inline math mode : `\(` and `\)`.
         Now, create a mark scheme for this question. We will now refer to this as <mark_scheme> It should outline what an answer would need to demonstrate for a range of possible marks, including maximum marks. The person using this mark scheme may not be familar with the subject matter, so be very specific
         when describing what an answer would need to include to get the marks. For example, avoid something like "gives a detailed description of X", as the person using this mark scheme might not know the subject so you will really need to spell it out for them.
         Using your knowledge of previous {} {} {} mark schemes when creating this mark scheme. If it is a maths question, make sure you include the correct answer to the question (which is `{}`)  in your the mark scheme.
-        Leave a new line between each mark explanation. Give the answer in the format: `\n<mark_scheme>\n`.'''.format(level, subject, exam_board, number_of_marks, question, level, subject, exam_board, question )
+        Leave a new line between each mark explanation. Give the answer in the format: `\n<mark_scheme>\n`. Remember to make sure the mark scheme is for the given example exam question.'''.format(level, subject, exam_board, number_of_marks, question, level, subject, exam_board, question )
 
     print(message)
 
