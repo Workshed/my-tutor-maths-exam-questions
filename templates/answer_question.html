@@ -22,31 +22,21 @@
       <img src="{{ url_for('static', filename='images/chip2.png') }}">
     </div>
     <div class="speech-bubble col-10">
+      <img src="" id="img" alt="Chart" height="200" width="200">
+      <br>
       {% for para in question %}
           <span class="lead">{{para.replace('Question: ', '')}}</span>
           <br>
       {% endfor %}
+      <br>
+      
     </div>
 
 
   </div>
 
-  <script type="module">
-    window.addEventListener("DOMContentLoaded", () => 
-      import("//unpkg.com/mathlive?module").then((mathlive) => 
-        mathlive.renderMathInDocument()
-      )
-    );
-  </script>
-
 <div class="user-answer">
-  <div class="user-answer-form">
-    Use this box to create mathematical formulas to insert in to your answer...
-    <br />
-    <math-field id="mathfield"></math-field>
-      <button id="insert-latex" class="btn btn-primary btn-lg">Insert LaTeX</button>
-    <form class="" onsubmit="handleSubmit(event)" method="post">
-      
+  <div class="user-answer-form">      
       <div class="mb-3">
         <textarea id="the-answer" name="answer" rows="8" cols="80">{{ answer }}</textarea>
       </div>
@@ -142,22 +132,7 @@
   var feedbackPara = document.getElementById('feedback')
   var markSchemePara = document.getElementById('mark-scheme-para')
   var hintPara = document.getElementById('hint')
-  const mf = document.getElementById('mathfield')
-  const insertButton = document.getElementById('insert-latex');
   const textarea = document.getElementById('the-answer');
-
-  insertButton.addEventListener('click', function(event) {
-    // Get the LaTeX from the math field
-    const latex = mf.getValue('latex');
-
-    // Get the current cursor position in the textarea
-    const cursorPosition = textarea.selectionStart;
-
-    // Insert the LaTeX at the cursor position
-    const before = textarea.value.substring(0, cursorPosition);
-    const after = textarea.value.substring(cursorPosition);
-    textarea.value = before + latex + after;
-  });
 
   function getMarkScheme() {
     axios.post('/get-mark-scheme')
@@ -233,7 +208,6 @@
           loadingScreen.style.display = "none";
           feedbackPara.innerHTML = response.data.result.join('<br>');
           feedbackSection.classList.remove('hidden')
-          MathJax.typeset()
 
 
           // createConfettiAnimation();
@@ -256,12 +230,6 @@
     starAnswerDiv.classList.add('show');
     showPerfectButton.classList.add('hidden');
   });
-
-//   showHint.addEventListener('click', function() {
-//     event.preventDefault();
-//     hintSection.classList.remove('hidden')
-//     showHint.classList.add('hidden')
-//   });
 
   submit.addEventListener('click', function() {
     loadingScreen.style.display = "flex";
@@ -316,6 +284,12 @@
           });
     // write code here that would call a route on the backend called same again
   });
+
+  data = "{{equation}}"
+  data = data.replace("b&#39;", "") //to get rid of start curly brace code 
+  data = data.replace("&#39;", "")  //to get rid of end curly bracecode 
+
+  document.getElementById("img").src = "data:image/png;base64,"+data; // set src
 
 
 </script>

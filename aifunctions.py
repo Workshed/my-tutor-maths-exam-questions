@@ -1,5 +1,11 @@
 import openai
 import config, os
+from rdkit import Chem
+from rdkit.Chem import Draw
+from rdkit.Chem import AllChem
+import re
+import base64
+from io import BytesIO
 
 openai.api_key = config.OPENAI_API_KEY
 
@@ -29,11 +35,13 @@ def create_question(subject, level, exam_board, number_of_marks, topic, same_aga
     If you refer to a text, either refer to it by name or quote it.
     You must include all the information required to answer the question.
     Give your response to this request in the format `Question: <question> [<number of marks> Mark(s)].
-    The exam question must include a formula, all formulas must be specified in LaTeX. When outputting LaTeX could you please use the specific LaTeX math mode delimiters for your response?
+    The exam question must include a chemical formula or chemical structure, all chemical formulas or structures must be specified in SMILES notation. When outputting SMILES notation could you please use the specific SMILES notation mode delimiters for your response?
+    If the level chosen is A Level then you must show a chemical structure containing more than 2 atoms in the question but do not refer to SMILES in the question (just use the notation as a diagramatic aid), nor should the answer require the student to answer using SMILES, just refer to the diagram. 
+    Don't ever ask the user to draw anything as part of their answer, answers are expected to be textual or numerical only.
 
-    LaTex math mode specific delimiters as following
+    SMILES notation mode specific delimiters as following
 
-    inline math mode : `\(` and `\)`
+    SMILES notation mode : `\(` and `\)`
     '''.format(subject, level, exam_board, number_of_marks, exam_board_sentence, same_again_sentence,  topic_sentance, number_of_marks, exam_board, subject, level )
 
     print(message)
@@ -61,7 +69,7 @@ def create_mark_scheme(subject, level, exam_board, question, number_of_marks):
 
     number_of_marks = number_of_marks if number_of_marks else 3
     message = '''The following is a {} {} {} example exam question, which is worth {} mark(s): `{}`.
-        The example exam question may include LaTeX, the LaTex math mode specific delimiters as following
+        The example exam question may include SMILES notation, the SMILES notation mode specific delimiters as following
         inline math mode : `\(` and `\)`.
         Now, create a mark scheme for this question. We will now refer to this as <mark_scheme> It should outline what an answer would need to demonstrate for a range of possible marks, including maximum marks. The person using this mark scheme may not be familar with the subject matter, so be very specific
         when describing what an answer would need to include to get the marks. For example, avoid something like "gives a detailed description of X", as the person using this mark scheme might not know the subject so you will really need to spell it out for them.
@@ -146,3 +154,45 @@ def get_hint(subject, level, exam_board, question, marks):
         return
 
     return response
+
+
+def find_smiles_chemical_equation(s):
+    result = re.search(r'\\\(.*?\\\)', s)
+    if result:
+        extracted_string = result.group(0)[2:-2]
+        cleaned_string = extracted_string.replace('"', '').replace("'", "").replace("`", "")
+        
+        return cleaned_string
+    else:
+        return None
+
+
+def get_chemistry_image(question):
+    try:
+        equation = find_smiles_chemical_equation(question)
+        print(f"equation: {equation}")
+        if equation is None:
+            return None
+
+        molecule = Chem.MolFromSmiles(equation)
+        molecule = Chem.AddHs(molecule) # Adds hydrogen molecules which are not shown by default
+
+        # Function to annotate atoms in a molecule with their element symbol
+        def label_atoms(mol):
+            for atom in mol.GetAtoms():
+                atom.SetProp('atomLabel', atom.GetSymbol())
+
+        label_atoms(molecule)
+
+        # Modify drawing options
+        opts = Draw.DrawingOptions()
+        opts.includeAtomNumbers = True
+
+        img = Draw.MolToImage(molecule, options=opts)
+        buffered = BytesIO()
+        img.save(buffered, format="PNG")
+        img_str = base64.b64encode(buffered.getvalue())
+        return img_str
+    except:
+        return None
+    

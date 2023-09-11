@@ -1,8 +1,16 @@
-# OpenAI Flask Boilerplate instructions
+# OpenAI Flask Boilerplate Chemistry instructions
 
 1. Get an OpenAI API key and add it to the environment variable `OPENAI_KEY`
 2. `pip install -r requirements.txt`
 3. `python3 app.py`
+
+This particular repo has been tweaked to only generate Chemistry questions. The questions themselves aim to include chemical formulas and structures using ["SMILES notation"](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system) which can be interpretted by [RDKit](https://www.rdkit.org/) (python) and an image generated for display. Due to the complexity of this we try to instruct GPT to not expect an answer in SMILES from the user/student.
+
+I believe for RDKit to be able to render correctly you likely need a TeX typesetting system, such as MacTeX, installed 
+
+```
+brew install --cask mactex
+```
 
 ## ChatGPT Tips and Tricks
 ### ChatGPT likes a chinwag
